@@ -19,6 +19,8 @@ const Create = () => {
     const [toggleSubmit,setToggoleSubmit]=useState(true);
     const [editItem,setEditItem]=useState(null);
     const [selectDisabled, setSelectDisabled] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('All');
+    const [filterPriority, setFilterPriority] = useState('All');
    
     
     const addItem = () => {
@@ -76,13 +78,29 @@ const Create = () => {
         setEditItem(id);
         setSelectDisabled(true);
     }
+    const filterTasks = () => {
+        let filteredItems = getLocalItem();
 
+        if (filterStatus !== 'All') {
+            filteredItems = filteredItems.filter(item => item.status === filterStatus);
+        }
+
+        if (filterPriority !== 'All') {
+            filteredItems = filteredItems.filter(item => item.priority === filterPriority);
+        }
+        
+        setItems(filteredItems);
+    };
     const updateLocalStorage = (updatedItems) => {
         localStorage.setItem('items', JSON.stringify(updatedItems));
     }
     useEffect(() => {
         localStorage.setItem('items', JSON.stringify(items));
     }, [items]);
+
+    useEffect(() => {
+        filterTasks();
+    }, [filterStatus, filterPriority]);
 
     return (
         <>
@@ -128,24 +146,23 @@ const Create = () => {
                                 <div className='row justify-content-center d-flex'>
                                     <div className='col-md-5'>
                                         <div className='d-flex my-5'>
-                                            <select className="form-select" aria-label="Select">
-                                                <option defaultValue>Select Task Status</option>
-                                                <option value="1">Completed</option>
-                                                <option value="1">Incompleted</option>
+                                            <select className="form-select" aria-label="Select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                                                <option value="All">All Status</option>
+                                                <option value="Completed">Completed</option>
+                                                <option value="Incompleted">Incompleted</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div className='col-md-5'>
                                         <div className='d-flex my-5'>
-                                            <select className="form-select" aria-label="Select">
-                                                <option defaultValue>Select Priority</option>
-                                                <option value="1">Low</option>
-                                                <option value="1">High</option>
-                                                <option value="1">Medium</option>
+                                            <select className="form-select" aria-label="Select" value={filterPriority} onChange={(e) => setFilterPriority(e.target.value)}>
+                                                <option value="All">All Priority</option>
+                                                {data.map((item) => (
+                                                    <option key={item.name} value={item.name}>{item.name}</option>
+                                                ))}
                                             </select>
-                                            <button className='btn btn-primary ms-3'>Filter</button>
+                                            <button className='btn btn-primary ms-3' onClick={filterTasks}>Filter</button>
                                         </div>
-                                        
                                     </div>
                                     
                                 </div>
