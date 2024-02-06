@@ -16,16 +16,37 @@ const Create = () => {
     const [selectData, setSelectData] = useState('');
     const [items, setItems] = useState(getLocalItem());
     const [checkedItems, setCheckedItems] = useState({});
+    const [toggleSubmit,setToggoleSubmit]=useState(true);
+    const [editItem,setEditItem]=useState(null);
+    const [selectDisabled, setSelectDisabled] = useState(false);
    
     
     const addItem = () => {
-        if (inputData && selectData) {
+
+            if(!inputData && !selectData){
+                alert('please fill data');
+            }else if(inputData && !toggleSubmit){
+                setItems(items.map((item)=>{
+                    if(item.id===editItem){
+                        return{...item,task:inputData}
+                    }
+                    return item
+                }))
+                setToggoleSubmit(true);
+                setInputData('');
+                setSelectData('');
+                setEditItem(null);
+                setSelectDisabled(false);
+        }else {
             const allInput={id:new Date().getTime().toString(),task: inputData, priority: selectData ,status:'Incompleted'}
             setItems([...items,allInput]);
             setInputData('');
             setSelectData('');
             setCheckedItems(prevState => ({ ...prevState, [allInput.id]: false }));
         }
+        updateLocalStorage([...items,allInput]);
+        
+
     }
     const handleCheckboxChange = (id) => {
         setCheckedItems(prevState => ({ ...prevState, [id]: !prevState[id] }));
@@ -44,6 +65,18 @@ const Create = () => {
         });
         setItems(deleteData)
     }
+
+    const UpdateBtn=(id)=>{
+        const editData=items.find((item)=>{
+            return id===item.id
+        })
+        setToggoleSubmit(false)
+        setInputData(editData.task);
+        setSelectData(editData.priority);
+        setEditItem(id);
+        setSelectDisabled(true);
+    }
+
     const updateLocalStorage = (updatedItems) => {
         localStorage.setItem('items', JSON.stringify(updatedItems));
     }
@@ -69,7 +102,7 @@ const Create = () => {
                                         <input type="text" name="task" className='form-control' placeholder='Enter Task' value={inputData} onChange={(e) => setInputData(e.target.value)} />
                                     </div>
                                     <div className='form-group mb-3'>
-                                        <select className="form-select" aria-label="Select" value={selectData} onChange={(e) =>setSelectData(e.target.value)}>
+                                        <select className="form-select" aria-label="Select" value={selectData} onChange={(e) =>setSelectData(e.target.value) } disabled={selectDisabled}>
                                             <option defaultValue>Select Priority</option>
                                             {data.map((item) => (
                                                 <option key={item.name}>{item.name}</option>
@@ -77,7 +110,12 @@ const Create = () => {
                                         </select>
                                     </div>
                                     <div className='form-group mt-3'>
-                                        <button onClick={addItem} className='btn btn-primary align-items-center'>Create Task</button>
+                                    {toggleSubmit ? (
+                                            <button onClick={addItem} className='btn btn-primary align-items-center'>Create Task</button>
+                                        ) : (
+                                            <button onClick={addItem} className='btn btn-info align-items-center'>Update Task</button>
+                                        )}
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +159,7 @@ const Create = () => {
                                                     
                                                 <span style={{ textDecorationLine: checkedItems[item.id] ? 'line-through' : 'none' }}>
                                                         {item.task}
-                                                    </span>
+                                                </span>
                                                 <span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.priority}</span>
                                                 <span className={`mx-2 badge ${statusColor(item.status)} px-3 py-1 rounded`}>{item.status}</span>
                                                 </div>
