@@ -16,11 +16,12 @@ const Create = () => {
     const [selectData, setSelectData] = useState('');
     const [items, setItems] = useState(getLocalItem());
     const [checkedItems, setCheckedItems] = useState({});
+    const [status, setStatus] = useState('');
     
     
     const addItem = () => {
         if (inputData && selectData) {
-            const allInput={id:new Date().getTime().toString(),task: inputData, priority: selectData }
+            const allInput={id:new Date().getTime().toString(),task: inputData, priority: selectData ,status:''}
             setItems([...items,allInput]);
             setInputData('');
             setSelectData('');
@@ -29,18 +30,24 @@ const Create = () => {
     }
     const handleCheckboxChange = (id) => {
         setCheckedItems(prevState => ({ ...prevState, [id]: !prevState[id] }));
+        const updatedItems = items.map(item => {
+            if (item.id === id) {
+                return { ...item, status: checkedItems[id] ? 'Incompleted' : 'completed' };
+            }
+            return item;
+        });
+        setItems(updatedItems);
+        updateLocalStorage(updatedItems);
     }
     const deleteTask=(id)=>{
-        const remaining=items.filter((item)=>{
+        const deleteData=items.filter((item)=>{
            return id!==item.id
-
         });
-        setItems(remaining)
-
+        setItems(deleteData)
     }
-
-
-    
+    const updateLocalStorage = (updatedItems) => {
+        localStorage.setItem('items', JSON.stringify(updatedItems));
+    }
     useEffect(() => {
         localStorage.setItem('items', JSON.stringify(items));
     }, [items]);
@@ -112,10 +119,12 @@ const Create = () => {
                                                 <div>
                                                 <input className="form-check-input me-1" type="checkbox" checked={checkedItems[item.id] || false}
                                                     onChange={() => handleCheckboxChange(item.id)}/>
+                                                    
                                                 <span style={{ textDecorationLine: checkedItems[item.id] ? 'line-through' : 'none' }}>
                                                         {item.task}
                                                     </span>
                                                 <span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.priority}</span>
+                                                <span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.status}</span>
                                                 </div>
                                                 <div className='d-flex gap-3'>
                                                     <a  role="button" onClick={() => UpdateBtn(item.id)}><FaEdit color='blue'/></a>
