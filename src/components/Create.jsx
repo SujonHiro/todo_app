@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import data from '../helper/data';
-
+import getColorClass from '../helper/color';
 const getLocalItem = () => {
     let list = localStorage.getItem('items');
     if (list) {
@@ -16,13 +16,25 @@ const Create = () => {
     const [selectData, setSelectData] = useState('');
     const [items, setItems] = useState(getLocalItem());
 
+    
     const addItem = () => {
         if (inputData && selectData) {
-            setItems([...items,{ task: inputData, priority: selectData }]);
+            const allInput={id:new Date().getTime().toString(),task: inputData, priority: selectData }
+            setItems([...items,allInput]);
             setInputData('');
             setSelectData('');
         }
     }
+    const deleteTask=(id)=>{
+        const remaining=items.filter((item)=>{
+           return id!==item.id
+
+        });
+        setItems(remaining)
+
+    }
+
+    
     useEffect(() => {
         localStorage.setItem('items', JSON.stringify(items));
     }, [items]);
@@ -44,7 +56,7 @@ const Create = () => {
                                         <label htmlFor="title">Task Name</label>
                                         <input type="text" name="task" className='form-control' placeholder='Enter Task' value={inputData} onChange={(e) => setInputData(e.target.value)} />
                                     </div>
-                                    <div className='form-group'>
+                                    <div className='form-group mb-3'>
                                         <select className="form-select" aria-label="Select" value={selectData} onChange={(e) => setSelectData(e.target.value)}>
                                             <option defaultValue>Select Priority</option>
                                             {data.map((item) => (
@@ -62,16 +74,42 @@ const Create = () => {
                     <div className='col-md-12 mt-5'>
                         <div className='card'>
                             <div className='card-body'>
+                                <h2 className='text-center text-danger'>Task</h2>
+                                <div className='row justify-content-center d-flex'>
+                                    <div className='col-md-5'>
+                                        <div className='d-flex my-5'>
+                                            <select className="form-select" aria-label="Select">
+                                                <option defaultValue>Select Task Status</option>
+                                                <option value="1">Completed</option>
+                                                <option value="1">Incompleted</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className='col-md-5'>
+                                        <div className='d-flex my-5'>
+                                            <select className="form-select" aria-label="Select">
+                                                <option defaultValue>Select Priority</option>
+                                                <option value="1">Low</option>
+                                                <option value="1">High</option>
+                                                <option value="1">Medium</option>
+                                            </select>
+                                            <button className='btn btn-primary ms-3'>Filter</button>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
                             <ul className='list-group'>
-                            {items.map((item, index) => (
-                                        <li className='list-group-item d-flex flex-row  justify-content-between' key={index}>
+                            {items.map((item) => (
+                                        <li className='list-group-item d-flex flex-row  justify-content-between' key={item.id}>
                                                 <div>
                                                 <input className="form-check-input me-1" type="checkbox"/>
-                                                  {item.task}<span className='mx-2 bg-${item.color} px-3 py-1 rounded'>{item.priority}</span>
+                                                  {item.task}<span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.priority}</span>
                                                 </div>
-                                                <div>
-                                                    <a href="#"><FaEdit/></a>
-                                                    <a href="#"><MdDelete color='red'/></a>
+                                                <div className='d-flex gap-3'>
+                                                    <a  role="button" onClick={() => UpdateBtn(item.id)}><FaEdit color='blue'/></a>
+                                                    <a  role="button" onClick={() => deleteTask(item.id)}><MdDelete color='red'/></a>
                                                 </div>
                                         </li>
                                 ))}

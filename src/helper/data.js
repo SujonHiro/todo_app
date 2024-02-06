@@ -1,7 +1,8 @@
 const data = [
-    { name: 'High',colors:'warning'},
-    { name: 'Medium',colors:'info' },
-    { name: 'Low',colors:'primary' },
+    { name: 'High'},
+    { name: 'Medium' },
+    { name: 'Low'},
   ]
 
   export default data
+
