@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
+const getLocalItem=()=>{
+
+    let list = localStorage.getItem('items');
+    if(list){
+        console.log(list)
+        return JSON.parse(localStorage.getItem('items'));
+        
+    }
+}
+
 const TaskStatus = () => {
+    const [items,setItems]=useState(getLocalItem());
+
+    setItems(items)
     return (
         <>
             <div className='container mx-auto mt-5'>
