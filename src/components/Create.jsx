@@ -15,7 +15,8 @@ const Create = () => {
     const [inputData, setInputData] = useState('');
     const [selectData, setSelectData] = useState('');
     const [items, setItems] = useState(getLocalItem());
-
+    const [checkedItems, setCheckedItems] = useState({});
+    
     
     const addItem = () => {
         if (inputData && selectData) {
@@ -23,7 +24,11 @@ const Create = () => {
             setItems([...items,allInput]);
             setInputData('');
             setSelectData('');
+            setCheckedItems(prevState => ({ ...prevState, [allInput.id]: false }));
         }
+    }
+    const handleCheckboxChange = (id) => {
+        setCheckedItems(prevState => ({ ...prevState, [id]: !prevState[id] }));
     }
     const deleteTask=(id)=>{
         const remaining=items.filter((item)=>{
@@ -33,6 +38,7 @@ const Create = () => {
         setItems(remaining)
 
     }
+
 
     
     useEffect(() => {
@@ -57,7 +63,7 @@ const Create = () => {
                                         <input type="text" name="task" className='form-control' placeholder='Enter Task' value={inputData} onChange={(e) => setInputData(e.target.value)} />
                                     </div>
                                     <div className='form-group mb-3'>
-                                        <select className="form-select" aria-label="Select" value={selectData} onChange={(e) => setSelectData(e.target.value)}>
+                                        <select className="form-select" aria-label="Select" value={selectData} onChange={(e) =>setSelectData(e.target.value)}>
                                             <option defaultValue>Select Priority</option>
                                             {data.map((item) => (
                                                 <option key={item.name}>{item.name}</option>
@@ -104,8 +110,12 @@ const Create = () => {
                             {items.map((item) => (
                                         <li className='list-group-item d-flex flex-row  justify-content-between' key={item.id}>
                                                 <div>
-                                                <input className="form-check-input me-1" type="checkbox"/>
-                                                  {item.task}<span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.priority}</span>
+                                                <input className="form-check-input me-1" type="checkbox" checked={checkedItems[item.id] || false}
+                                                    onChange={() => handleCheckboxChange(item.id)}/>
+                                                <span style={{ textDecorationLine: checkedItems[item.id] ? 'line-through' : 'none' }}>
+                                                        {item.task}
+                                                    </span>
+                                                <span className={`mx-2 badge ${getColorClass(item.priority)} px-3 py-1 rounded`}>{item.priority}</span>
                                                 </div>
                                                 <div className='d-flex gap-3'>
                                                     <a  role="button" onClick={() => UpdateBtn(item.id)}><FaEdit color='blue'/></a>
