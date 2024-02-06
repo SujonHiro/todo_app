@@ -1,4 +1,4 @@
-const getColorClass = (priority) => {
+export const getColorClass = (priority) => {
     switch (priority) {
         case 'High':
             return 'text-bg-danger';
@@ -10,4 +10,16 @@ const getColorClass = (priority) => {
             return '';
     }
 }
-export default getColorClass
+
+
+export const statusColor=(status)=>{
+    switch (status) {
+        case 'Completed':
+            return 'text-bg-success';
+        case 'Incompleted':
+            return 'text-bg-danger';
+        
+        default:
+            return '';
+    }
+}
