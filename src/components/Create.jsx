@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import data from '../data/data';
+import data from '../helper/data';
 
 const getLocalItem = () => {
     let list = localStorage.getItem('items');
@@ -18,12 +18,11 @@ const Create = () => {
 
     const addItem = () => {
         if (inputData && selectData) {
-            setItems([...items, { task: inputData, priority: selectData }]);
+            setItems([...items,{ task: inputData, priority: selectData }]);
             setInputData('');
             setSelectData('');
         }
     }
-
     useEffect(() => {
         localStorage.setItem('items', JSON.stringify(items));
     }, [items]);
@@ -68,7 +67,7 @@ const Create = () => {
                                         <li className='list-group-item d-flex flex-row  justify-content-between' key={index}>
                                                 <div>
                                                 <input className="form-check-input me-1" type="checkbox"/>
-                                                  {item.task}<span className='mx-2 bg-success-subtle px-3 py-2 rounded'>{item.priority}</span>
+                                                  {item.task}<span className='mx-2 bg-${item.color} px-3 py-1 rounded'>{item.priority}</span>
                                                 </div>
                                                 <div>
                                                     <a href="#"><FaEdit/></a>
@@ -77,8 +76,6 @@ const Create = () => {
                                         </li>
                                 ))}
                                 </ul>
-                                
-                                
                             </div>
                         </div>
                     </div>
