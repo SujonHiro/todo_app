@@ -15,6 +15,7 @@ This is a simple Todo application built with React.js. It allows users to create
 1. Clone the repository:
    ```bash
    git clone <repository_url>
+   
 2.Navigate to the project directory:
  ```bash
 cd react-todo
@@ -28,6 +29,7 @@ Start the development server:
 bash
 Copy code
 npm start
+
 Open your browser and go to http://localhost:3000 to view the application.
 
 Create tasks by entering a task name and selecting its priority. Click "Create Task" to add it to the list.
