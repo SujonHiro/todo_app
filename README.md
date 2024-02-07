@@ -2,8 +2,6 @@
 
 This is a simple Todo application built with React.js. It allows users to create, update, delete, and filter tasks based on their status and priority.
 
-
-
 ## Features
 
 - Create new tasks with a name and priority.
@@ -18,9 +16,11 @@ This is a simple Todo application built with React.js. It allows users to create
    ```bash
    git clone <repository_url>
 2.Navigate to the project directory:
+ ```bash
 cd react-todo
 
 3.Install dependencies:
+ ```bash
 npm install
 
 Start the development server:
@@ -44,9 +44,8 @@ Technologies Used
 React.js
 React Icons
 Local Storage
-Folder Structure
-kotlin
-Copy code
+
+
 react-todo/
 │
 ├── public/
