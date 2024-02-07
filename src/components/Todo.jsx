@@ -11,7 +11,7 @@ const getLocalItem = () => {
     return [];
 }
 
-const Create = () => {
+const Todo = () => {
     const [inputData, setInputData] = useState('');
     const [selectData, setSelectData] = useState('');
     const [items, setItems] = useState(getLocalItem());
@@ -21,6 +21,7 @@ const Create = () => {
     const [selectDisabled, setSelectDisabled] = useState(false);
     const [filterStatus, setFilterStatus] = useState('All');
     const [filterPriority, setFilterPriority] = useState('All');
+    const [filteredItems, setFilteredItems] = useState([]);
    
     
     const addItem = () => {
@@ -44,9 +45,10 @@ const Create = () => {
             setItems([...items,allInput]);
             setInputData('');
             setSelectData('');
+            filterTasks(...items,allInput);
             setCheckedItems(prevState => ({ ...prevState, [allInput.id]: false }));
         }
-        updateLocalStorage([...items,allInput]);
+        updateLocalStorage([...items]);
         
 
     }
@@ -81,6 +83,9 @@ const Create = () => {
     const filterTasks = () => {
         let filteredItems = getLocalItem();
 
+        if (filterStatus === 'All' && filterPriority === 'All') {
+            setFilteredItems(items);
+        }
         if (filterStatus !== 'All') {
             filteredItems = filteredItems.filter(item => item.status === filterStatus);
         }
@@ -88,19 +93,17 @@ const Create = () => {
         if (filterPriority !== 'All') {
             filteredItems = filteredItems.filter(item => item.priority === filterPriority);
         }
-        
-        setItems(filteredItems);
+        setFilteredItems(filteredItems);
     };
+
     const updateLocalStorage = (updatedItems) => {
         localStorage.setItem('items', JSON.stringify(updatedItems));
     }
     useEffect(() => {
         localStorage.setItem('items', JSON.stringify(items));
+        setFilteredItems(getLocalItem);
     }, [items]);
 
-    useEffect(() => {
-        filterTasks();
-    }, [filterStatus, filterPriority]);
 
     return (
         <>
@@ -168,7 +171,7 @@ const Create = () => {
                                 </div>
                                 
                             <ul className='list-group'>
-                            {items.map((item) => (
+                            {filteredItems.map((item) => (
                                         <li className='list-group-item d-flex flex-row  justify-content-between' key={item.id}>
                                                 <div>
                                                 <input className="form-check-input me-1" type="checkbox" checked={checkedItems[item.id] || false}
@@ -196,4 +199,4 @@ const Create = () => {
     );
 };
 
-export default Create;
+export default Todo;

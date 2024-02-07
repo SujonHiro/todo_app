@@ -1,11 +1,10 @@
 import React from 'react';
-import Create from './components/Create';
-import TaskStatus from './components/TaskStatus';
+import Todo from './components/Todo';
 
 const App = () => {
   return (
     <div>
-      <Create/>
+      <Todo/>
     </div>
   );
 };
